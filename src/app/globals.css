@@ -1,0 +1,339 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Design tokens
+   Sections switch tone with .tone-light / .tone-white / .tone-dark,
+   which redefine --fg, --bg and the derived line/muted colors.
+   ------------------------------------------------------------------ */
+:root {
+  --ink: #111111;
+  --paper: #f5f4f0;
+  --white: #ffffff;
+  --gray: #888888;
+  --accent: #4f6bff;
+
+  --fg: var(--ink);
+  --bg: var(--paper);
+  --line: rgb(17 17 17 / 0.12);
+  --line-strong: rgb(17 17 17 / 0.28);
+  /* Small text on light backgrounds: #111 at 62% passes WCAG AA. */
+  --muted: rgb(17 17 17 / 0.62);
+  --surface: #ffffff;
+  --tint: #ebe9e3;
+
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.tone-light,
+.tone-white,
+.tone-dark {
+  background-color: var(--bg);
+  color: var(--fg);
+}
+.tone-light {
+  --fg: var(--ink);
+  --bg: var(--paper);
+  --line: rgb(17 17 17 / 0.12);
+  --line-strong: rgb(17 17 17 / 0.28);
+  --muted: rgb(17 17 17 / 0.62);
+  --surface: #ffffff;
+  --tint: #ebe9e3;
+}
+.tone-white {
+  --fg: var(--ink);
+  --bg: var(--white);
+  --line: rgb(17 17 17 / 0.1);
+  --line-strong: rgb(17 17 17 / 0.26);
+  --muted: rgb(17 17 17 / 0.6);
+  --surface: var(--paper);
+  --tint: var(--paper);
+}
+.tone-dark {
+  --fg: var(--paper);
+  --bg: var(--ink);
+  --line: rgb(245 244 240 / 0.14);
+  --line-strong: rgb(245 244 240 / 0.3);
+  --muted: rgb(245 244 240 / 0.6);
+  --surface: #1b1b1b;
+  --tint: #1b1b1b;
+}
+
+@theme inline {
+  --color-fg: var(--fg);
+  --color-bg: var(--bg);
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-white: var(--white);
+  --color-gray: var(--gray);
+  --color-accent: var(--accent);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-muted: var(--muted);
+  --color-surface: var(--surface);
+  --color-tint: var(--tint);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-grotesk);
+  --font-serif: var(--font-instrument);
+  --font-mono: var(--font-code);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--white);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@layer components {
+  .container-x {
+    width: 100%;
+    max-width: 96rem;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .eyebrow {
+    font-family: var(--font-code), ui-monospace, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Space Grotesk display type. Use .headline for the uppercase variant. */
+  .display,
+  .headline {
+    font-family: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.045em;
+    line-height: 0.92;
+    text-wrap: balance;
+  }
+  .headline {
+    text-transform: uppercase;
+    line-height: 0.86;
+  }
+  /* Editorial accent inside headings: <em> switches to Instrument Serif. */
+  .display em,
+  .headline em,
+  .serif {
+    font-family: var(--font-instrument), Georgia, serif;
+    font-weight: 400;
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: -0.02em;
+  }
+  .headline em {
+    font-size: 1.06em;
+    line-height: 0.8;
+  }
+
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.5s var(--ease);
+  }
+  .link-underline:hover,
+  .link-underline:focus-visible,
+  .group:hover .link-underline {
+    background-size: 100% 1px;
+  }
+
+  /* Placeholder texture for media that has not been added yet */
+  .placeholder-grid {
+    background-color: var(--tint);
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: -1px -1px;
+  }
+
+  /* Hero letters lift and turn blue under the pointer. */
+  .hero-char {
+    display: inline-block;
+    transition:
+      transform 0.6s var(--ease),
+      color 0.4s var(--ease);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .hero-char:hover {
+      transform: translateY(-0.07em);
+      color: var(--accent);
+      transition-duration: 0.15s;
+    }
+  }
+
+  .marquee-track {
+    animation: marquee 38s linear infinite;
+  }
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  .scroll-cue {
+    animation: scroll-cue 2.2s var(--ease-in-out) infinite;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+/* Custom cursor: the native one is hidden only while ours is active.
+   Dialogs sit in the top layer above our cursor, so they keep the native one. */
+html.has-cursor,
+html.has-cursor * {
+  cursor: none !important;
+}
+html.has-cursor dialog[open],
+html.has-cursor dialog[open] * {
+  cursor: auto !important;
+}
+html.has-cursor dialog[open] :is(a, button) {
+  cursor: pointer !important;
+}
+
+/* ------------------------------------------------------------------
+   Page transitions (React <ViewTransition>)
+   ------------------------------------------------------------------ */
+::view-transition {
+  pointer-events: none;
+}
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header) {
+  display: none;
+}
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+::view-transition-old(.nav-forward) {
+  --slide-y: -40px;
+  animation:
+    180ms ease-in both vt-fade reverse,
+    420ms var(--ease-in-out) both vt-slide reverse;
+}
+::view-transition-new(.nav-forward) {
+  --slide-y: 60px;
+  animation:
+    260ms ease-out 160ms both vt-fade,
+    520ms var(--ease) both vt-slide;
+}
+::view-transition-old(.nav-back) {
+  --slide-y: 40px;
+  animation:
+    180ms ease-in both vt-fade reverse,
+    420ms var(--ease-in-out) both vt-slide reverse;
+}
+::view-transition-new(.nav-back) {
+  --slide-y: -60px;
+  animation:
+    260ms ease-out 160ms both vt-fade,
+    520ms var(--ease) both vt-slide;
+}
+
+::view-transition-group(.morph) {
+  animation-duration: 520ms;
+  animation-timing-function: var(--ease);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: vt-via-blur;
+}
+
+@keyframes vt-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes vt-slide {
+  from {
+    translate: 0 var(--slide-y);
+  }
+  to {
+    translate: 0 0;
+  }
+}
+@keyframes vt-via-blur {
+  35% {
+    filter: blur(2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  .marquee-track {
+    animation: none;
+  }
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
